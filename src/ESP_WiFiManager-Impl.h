@@ -1386,6 +1386,11 @@ void ESP_WiFiManager::handleWifiSave()
 {
   LOGDEBUG(F("WiFi save"));
 
+#if USING_CORS_FEATURE
+  // New from v1.1.1, for configure CORS Header, default to WM_HTTP_CORS_ALLOW_ALL = "*"
+  server->sendHeader(FPSTR(WM_HTTP_CORS), _CORS_Header);
+#endif
+
   //SAVE/connect here
   _ssid = server->arg("s").c_str();
   _pass = server->arg("p").c_str();
@@ -1867,6 +1872,9 @@ void ESP_WiFiManager::handleNotFound()
 */
 bool ESP_WiFiManager::captivePortal()
 {
+
+  return false;
+  
   LOGDEBUG1(F("captivePortal: hostHeader = "), server->hostHeader());
   
   if (!isIp(server->hostHeader()))
